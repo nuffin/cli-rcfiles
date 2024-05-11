@@ -14,6 +14,9 @@ fi
 
 ## Constants - begin
 
+# when using in docker, you may need replace "sudo" with ""
+SUDO="sudo"
+
 WHICH="command -v"
 NVM_INSTALL_URL=https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
 PYENV_INSTALL_URL=https://pyenv.run  ## equal to curl -L -o- https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
@@ -174,10 +177,10 @@ if test "${OSNAME}" = "Linux"; then
     ADDITIONAL_SOFTWARES=${LINUX_ADDITIONAL_SOFTWARES}
     echo "    installing ${ADDITIONAL_SOFTWARES} ..."
     if test -f /etc/debian_version; then
-        sudo env $_http_proxy $_https_proxy apt update && sudo env $_http_proxy $_https_proxy apt install -y ${ADDITIONAL_SOFTWARES}
+        ${SUDO} env $_http_proxy $_https_proxy apt update && ${SUDO} env $_http_proxy $_https_proxy apt install -y ${ADDITIONAL_SOFTWARES}
     fi
 
-    sudo /usr/bin/env pip3 install --break-system-packages tmuxp
+    ${SUDO} /usr/bin/env pip3 install --break-system-packages tmuxp
 
     /usr/bin/install -m 0700 -d ${HOME}/.gnupg
     echo "pinentry-program /usr/bin/pinentry-curses" >> ~/.gnupg/gpg-agent.conf
@@ -185,7 +188,7 @@ elif test "${OSNAME}" = "FreeBSD"; then
     ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES}"
     echo "    installing ${ADDITIONAL_SOFTWARES} ..."
 
-    sudo pip3 install --break-system-packages tmuxp
+    ${SUDO} pip3 install --break-system-packages tmuxp
 
     /usr/bin/install -m 0700 -d ${HOME}/.gnupg
     echo "pinentry-program /usr/bin/pinentry-curses" >> ~/.gnupg/gpg-agent.conf
