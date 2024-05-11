@@ -1,0 +1,9 @@
+sessionname sample
+
+source ~/.screenrc
+
+screen
+screen
+screen
+
+select 0
