@@ -1,0 +1,97 @@
+test -f ~/.bashrc.d/bashrc.local.pre && source ~/.bashrc.d/bashrc.local.pre
+test -f ~/.bashrc.d/bashrc.vars && source ~/.bashrc.d/bashrc.vars
+
+#if  test -x /usr/bin/which; then
+#    WHICH=/usr/bin/which
+#elif  test -x /bin/which; then
+#    WHICH=/bin/which
+#fi
+WHICH="command -v"
+
+############################################################
+### add these lines into ~/.bashrc && remove leading '#'
+### additional personal runtime config
+#test -f ~/.bashrc.${USER} && source ~/.bashrc.${USER}
+############################################################
+
+## use "jq" instead
+#if test "x$(uname -s)" = "xLinux"; then
+#    alias jsonpp="python -m json.tool"
+#fi
+
+if test "${TERM}" != "linux"; then
+    parse_git_branch_for_prompt() {
+        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if test -z "${branch}"; then
+            return
+        fi
+        echo -e "(${branch}) "
+    }
+    if test "${DISTRO_NAME}" = "Kali"; then
+        prompt_color='\[\033[;32m\]'
+        info_color='\[\033[1;34m\]'
+        prompt_symbol=㉿
+        export PS1="$prompt_color┌──${debian_chroot:+($debian_chroot)──}${VIRTUAL_ENV:+(\[\033[0;1m\]$(basename $VIRTUAL_ENV)$prompt_color)}($info_color\u$prompt_symbol\h$prompt_color)-[\[\033[0;1m\]\w$prompt_color]\n$prompt_color└─$info_color\[\e[01;33m\]\$(parse_git_branch_for_prompt)\[\e[00m\]\$\[\033[0m\] "
+    else
+        test ! -z "${PS1_USER_HOST_COLOR}" || PS1_USER_HOST_COLOR='01;32'
+        test ! -z "${PS1_PATH_COLOR}" || PS1_PATH_COLOR='01;36'
+        test ! -z "${PS1_GIT_BRANCH_COLOR}" || PS1_GIT_BRANCH_COLOR='01;33'
+        export PS1="\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\e[${PS1_USER_HOST_COLOR}m\]\u@\h\[\e[00m\]:\[\e[${PS1_PATH_COLOR}m\]\w\[\e[00m\]\n\[\e[${PS1_GIT_BRANCH_COLOR}m\]\$(parse_git_branch_for_prompt)\[\e[00m\]\$ "
+    fi
+fi
+
+shopt -s cdspell
+shopt -s no_empty_cmd_completion
+shopt -s extglob
+
+export HISTCONTROL=ignoredups:erasedups
+export HISTFILESIZE=50000000
+
+export EDITOR=vim
+export VISUAL=vim
+
+## Virtualenvwrapper
+#export WORKON_HOME=${HOME}/.virtualenvs
+#if test -z "${VIRTUALENVWRAPPER_PYTHON}"; then
+#    if test "${OSNAME}" = "Darwin"; then
+#        export VIRTUALENVWRAPPER_PYTHON=$(${WHICH} python2.7)
+#    fi
+#fi
+#if test -z "${VIRTUAL_ENV}"; then
+#    if ! type workon >/dev/null 2>&1; then
+#        if test -f /usr/local/bin/virtualenvwrapper.sh; then
+#            source /usr/local/bin/virtualenvwrapper.sh
+#        fi
+#    fi
+#    if type workon >/dev/null 2>&1; then
+#        test ! -z "${VIRTUALENV_NAME}" && workon ${VIRTUALENV_NAME}
+#    fi
+#fi
+
+if test ! -z "${BASHRCS}"; then
+    for f in ${BASHRCS}; do
+        test -f ${f} && source ${f}
+    done
+fi
+
+export GPG_TTY=$(tty)
+
+if test ! -z "${OTHER_RC_NAMES}"; then
+    for shrc in ${OTHER_RC_NAMES}; do
+        if test -e ${HOME}/.bashrc.d/bashrc.${shrc}; then
+            shrc_path=${HOME}/.bashrc.d/bashrc.${shrc}
+        elif test -e ${HOME}/.shrc.d/rc.${shrc}; then
+            shrc_path=${HOME}/.shrc.d/rc.${shrc}
+        fi
+        if test -e ${shrc_path}; then
+            source ${shrc_path}
+        fi
+    done
+fi
+
+RVM_PROFILE=/etc/profile.d/rvm.sh
+test -f ${RVM_PROFILE} && source ${RVM_PROFILE}
+
+test -f ~/.bashrc.d/bashrc.local.post && source ~/.bashrc.d/bashrc.local.post
+
+# vim: set sts=4 sw=4 et ft=sh:

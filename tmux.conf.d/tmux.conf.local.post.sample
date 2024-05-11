@@ -1,0 +1,9 @@
+## add some overrides here
+
+# set-option -gw window-style "bg=#101810"
+# set-option -gw window-style "bg=#848801"
+# set-option -gw window-style "bg=#49460C"
+# ## used as active window ## set-option -gw window-style "bg=#323836"
+# set-option -gw window-active-style "bg=black"
+# set-option -gw window-active-style "bg=#323836"
+# set-option -gw window-active-style "bg=#131E1E"

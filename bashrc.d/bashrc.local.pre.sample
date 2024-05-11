@@ -1,0 +1,5 @@
+#echo "enter bashrc.local.pre ..."
+
+test -f ${HOME}/.shrc.d/rc.local.pre && source ${HOME}/.shrc.d/rc.local.pre
+
+# vim: set sts=4 sw=4 et ft=sh:

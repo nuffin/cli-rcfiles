@@ -1,0 +1,8 @@
+if test "${OSNAME}" = "GNU/Linux" -o "${OSNAME}" = "Cygwin"; then
+    alias ls='ls --color'
+elif test "${OSNAME}" = "Darwin"; then
+    alias ls='ls -G'
+fi
+alias grep='grep --color=auto'
+
+# vim: set sts=4 sw=4 et ft=sh:

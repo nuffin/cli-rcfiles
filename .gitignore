@@ -1,0 +1,9 @@
+.DS_Store
+.*.sw?
+
+*.local
+*.local.pre
+*.local.post
+
+*rc.vars
+*rc.aliases

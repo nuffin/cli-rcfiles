@@ -1,0 +1,29 @@
+test -z "${GITROOT}" && export GITROOT=${HOME}/studio
+
+function  clonegit
+{
+    repo=$1
+    repo_dir=$2
+    test -z "${repo}" && echo "Usage: ${0} git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git" && return
+
+    [[ "${repo}" = *.git ]] || repo="${repo}.git"
+
+    read hostname username reposname << __EOF__
+$(echo ${repo} | sed -E "s,.git$,,; s,(.*@|(https|http|ssh)://)([a-z0-9\.-]+)(:[0-9]+/|:|/)(.*)/(.*),\3 \5 \6,")
+__EOF__
+    #echo hostname=${hostname}
+    #echo username=${username}
+    #echo reposname=${reposname}
+
+    target_dir=${GITROOT}/${hostname}/${username}
+
+    echo "Cloning ${repo} into ${target_dir}/ as ${reposname} ..."
+
+    test -d ${target_dir} || mkdir -p ${target_dir}
+    (cd ${target_dir} && git clone ${repo} ${repo_dir})
+}
+
+## use alias in .gitconfig instead
+# alias git-log-adog='git log --all --decorate --oneline --graph'
+
+# vim: set sts=4 sw=4 et ft=bash:

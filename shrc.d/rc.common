@@ -1,0 +1,44 @@
+function zprofiles
+{
+    OLD_WD=$(pwd)
+    if test "${1}" = "cd"; then
+        cd ${PROFILE_ROOT}
+        return
+    fi
+    (builtin cd ${PROFILE_ROOT}
+    case "${1}" in
+        status)
+            git status
+            ;;
+        update)
+            git stash && git pull --rebase && git stash pop
+            ;;
+        commit)
+            if test "${2}" = "-m"; then
+                COMMIT_MESSAGE=${3}
+                shift 3
+                echo git commit -m "${COMMIT_MESSAGE}" $@
+                git commit -m "${COMMIT_MESSAGE}" $@
+            else
+                shift
+                git commit $@
+            fi
+            ;;
+        push)
+            git push
+            ;;
+        deploy)
+            shift 1
+            ./deploy.sh $@
+            ;;
+        *)
+            echo
+            echo "Usage: zprofiles [status|update|commit|push|deploy] [...]"
+            echo
+            git status
+            ;;
+    esac
+    builtin cd ${OLD_WD})
+}
+
+# vim: set sts=4 sw=4 et ft=sh:

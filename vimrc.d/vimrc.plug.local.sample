@@ -1,0 +1,4 @@
+Plug 'mhinz/vim-startify'
+"Plug 'nrocco/vim-phplint'
+Plug 'amiorin/vim-project'
+Plug 'tpope/vim-commentary'

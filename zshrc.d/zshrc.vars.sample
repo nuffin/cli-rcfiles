@@ -1,0 +1,11 @@
+#echo "enter zshrc.vars ..."
+
+test -f ${HOME}/.shrc.d/rc.vars && source ${HOME}/.shrc.d/rc.vars
+
+test -d /usr/local/opt/llvm/bin \
+    && export PATH=/usr/local/opt/llvm/bin:/usr/local/sbin:$PATH
+# export VIRTUAL_ENV_DISABLE_PROMPT=0
+
+OTHER_RC_NAMES="${OTHER_RC_NAMES}"
+
+# vim: set sts=4 sw=4 et ft=sh:

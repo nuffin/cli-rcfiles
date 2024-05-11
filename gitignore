@@ -1,0 +1,8 @@
+# macOS
+*~
+.DS_Store
+
+# vim
+.sw?
+
+# vim: set ft=gitignore

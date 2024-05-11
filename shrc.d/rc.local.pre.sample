@@ -1,0 +1,3 @@
+#echo "enter common.sh.rc.local.pre ..."
+
+# vim: set sts=4 sw=4 et ft=sh:

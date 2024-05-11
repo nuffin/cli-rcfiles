@@ -1,0 +1,40 @@
+function screens
+{
+    SCREEN=/usr/bin/screen
+
+    SCREENS=$@
+    test -z "${SCREENS}" && test -f ~/.bashrc.d/bashrc.screens && source ~/.bashrc.d/bashrc.screens
+    test -z "${SCREENS}" && SCREENS="${USER}"
+
+    for name in ${SCREENS}; do
+        running=$(${SCREEN} -ls | grep "tached)" | awk '{print $1}' | cut -d'.' -f2)
+        found=0
+        for x in ${running}; do
+            if test "${name}" == "${x}"; then
+                echo "${name} exists"
+                found=1
+                break
+            fi
+        done
+        if test ${found} == 1; then
+            continue
+        fi
+        echo "creating screen named ${name}"
+        screenrc=${HOME}/.screenrc.d/screenrc.${name}
+        if test -f ${screenrc}; then
+            dirname=$(sed -n "s,^#DIR:\(.*\)$,\1,p" ${screenrc})
+            if test ! -z "${dirname}" -a -d "${dirname}"; then
+                cd ${dirname}
+                ${SCREEN} -dmS ${name} -c ${screenrc}
+                cd ${OLDPWD}
+            else
+                ${SCREEN} -dmS ${name} -c ${screenrc}
+            fi
+        else
+            echo "WARNING: ${screenrc} not found"
+            screen -dmS ${name}
+        fi
+    done
+}
+
+# vim: set sts=4 sw=4 et ft=sh:

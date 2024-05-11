@@ -1,0 +1,5 @@
+#echo "enter bashrc.common ..."
+
+test -f ${HOME}/.shrc.d/rc.common && source ${HOME}/.shrc.d/rc.common
+
+# vim: set sts=4 sw=4 et ft=sh:

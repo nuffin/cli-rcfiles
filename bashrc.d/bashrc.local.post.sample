@@ -1,0 +1,5 @@
+#echo "enter bashrc.local.post ..."
+
+test -f ${HOME}/.shrc.d/rc.local.post && source ${HOME}/.shrc.d/rc.local.post
+
+# vim: set sts=4 sw=4 et ft=sh:

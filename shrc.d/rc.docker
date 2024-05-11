@@ -1,0 +1,75 @@
+DEFAULT_CONTAINER_NAME=${DEFAULT_CONTAINER_NAME}
+test ! -z "${DEFAULT_CONTAINER_NAME}" || DEFAULT_CONTAINER_NAME=daily-debian
+
+function docker-run
+{
+    CMD=${FUNCNAME[0]}
+
+    function usage {
+	cat << __EOF__
+Usage:
+    ${CMD} [OPTIONS] [CONTAINER-NAME] [COMMAND]"
+    ${CMD} [OPTIONS] [IMAGE-NAME] [COMMAND]"
+__EOF__
+    }
+
+    CONTAINER_OR_IMAGE=${1}
+    test -z "${CONTAINER_OR_IMAGE}" && usage && set +x && return 1
+
+    if test "${CONTAINER_OR_IMAGE:0:1}" == "/"; then
+	CONTAINER_NAME=${DEFAULT_CONTAINER_NAME}
+    elif echo "${CONTAINER_OR_IMAGE}" | egrep -q ":" 2>/dev/null; then
+	IMAGE_NAME=${CONTAINER_OR_IMAGE}
+	CONTAINER_NAME=${DEFAULT_CONTAINER_NAME}
+	shift
+    else
+	CONTAINER_NAME=${CONTAINER_OR_IMAGE}
+	shift
+    fi
+
+    COMMAND=${@}
+
+    test -z "${COMMAND}" && COMMAND=/bin/sh
+
+    CONTAINER=$(docker ps -a -f name=${CONTAINER_NAME} | grep ${CONTAINER_NAME}$)
+    if test -z "${CONTAINER}"; then
+	## no such container
+	IFS=: read -r REPOS_NAME TAG_NAME <<< "${IMAGE_NAME}"
+	test -z "${REPOS_NAME}" && usage
+	test -z "${TAG_NAME}" && TAG_NAME=latest
+	test -z "${REPOS_NAME}" -o -z "${TAG_NAME}" && echo "ERROR: container not found, and image not specified" && usage && set +x && return 1
+	docker run -it -p 12122:22 --name ${CONTAINER_NAME} ${REPOS_NAME}:${TAG_NAME} ${COMMAND}
+    else
+	CONTAINER=$(docker ps -a -f name=${CONTAINER_NAME} -f status="running" | grep ${CONTAINER_NAME}$)
+	if test -z "${CONTAINER}"; then
+	    ## container found, but not running, attach again
+	    docker start -ai ${CONTAINER_NAME}
+	else
+	    docker exec -it ${CONTAINER_NAME} ${COMMAND}
+	fi
+    fi
+}
+
+function docker-search-all-tags
+{
+    REPOS_NAME=${1}
+    wget -q -O - "https://hub.docker.com/v2/namespaces/library/repositories/${REPOS_NAME}/tags?page_size=100" | grep -o '"name": *"[^"]*' | grep -o '[^"]*$'
+}
+
+function ssh-docker
+{
+    PROXY_HTTP_PORT=$1
+    PROXY_SOCKS_PORT=$2
+    CONTAINER_PORT=$3
+
+    test -z "${CONTAINER_PORT}" && CONTAINER_PORT=${PROXY_SOCKS_PORT} && unset PROXY_SOCKS_PORT \
+        && test -z "${CONTAINER_PORT}" && CONTAINER_PORT=${PROXY_HTTP_PORT} && unset PROXY_HTTP_PORT \
+        && test -z "${CONTAINER_PORT}" && CONTAINER_PORT=12122
+
+    test -z "${PROXY_HTTP_PORT}" && PROXY_HTTP_PORT=49930
+    test -z "${PROXY_SOCKS_PORT}" && PROXY_SOCKS_PORT=$((PROXY_HTTP_PORT + 1))
+
+    ssh -R ${PROXY_HTTP_PORT}:127.0.0.1:${PROXY_HTTP_PORT} -R ${PROXY_SOCKS_PORT}:127.0.0.1:${PROXY_SOCKS_PORT} root@localhost -p ${CONTAINER_PORT}
+}
+
+# vim: set ts=8 sts=4 sw=4 et ft=bash:

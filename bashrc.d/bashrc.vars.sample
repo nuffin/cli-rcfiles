@@ -1,0 +1,11 @@
+#echo "enter bashrc.vars..."
+
+test -f ${HOME}/.shrc.d/rc.vars && source ${HOME}/.shrc.d/rc.vars
+
+#PS1_USER_HOST_COLOR='01;35'
+#PS1_PATH_COLOR='01;36'
+#PS1_GIT_BRANCH_COLOR='01;33'
+
+OTHER_RC_NAMES="${OTHER_RC_NAMES} screens colors aliases screens.local"
+
+# vim: set sts=4 sw=4 et ft=sh:

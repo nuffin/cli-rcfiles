@@ -1,0 +1,26 @@
+echo "You may want to change something in shrc.d/rc.vars"
+export HOMEBREW_GITHUB_API_TOKEN="<YOUR-HOMEBREW-GITHUB-API-TOKEN>"
+
+export OSNAME=$(uname -o 2>/dev/null || uname -o)
+
+export DISTRO_NAME=""
+
+export CODEROOT=${HOME}/studio
+export GITROOT=${HOME}/studio
+
+export DEFAULT_CONTAINER_NAME=daily-debian
+
+export SCREENS="${USER} mobile github"
+export SCREENS="${USER}"
+
+export PROFILE_ROOT=${CODEROOT}/rcfiles
+
+## used only once, no export needed
+OTHER_RC_NAMES="common git go docker k8s nvm pyenv ${OTHER_RC_NAMES}"
+
+# export NO_PROXY=127.0.0.1,10.0.0.0/8,192.168.0.0/16,172.16.0.0/16,172.17.0.0/16
+# export ALL_PROXY=socks5://127.0.0.1:49931
+# export http_proxy=http://127.0.0.1:49930
+# export https_proxy=http://127.0.0.1:49930
+
+# vim: set sts=4 sw=4 et ft=sh:

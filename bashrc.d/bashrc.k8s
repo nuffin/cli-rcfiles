@@ -1,0 +1,9 @@
+for x in /usr/bin/kubectl /usr/local/bin/kubectl; do
+    if test -x ${x}; then
+    export KUBECTL=${x}
+    break
+    fi
+done
+alias kubectl="/usr/bin/env HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= http_proxy= https_proxy= all_proxy= NO_PROXY= ${KUBECTL}"
+
+# vim: set sts=4 sw=4 et ft=sh:

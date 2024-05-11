@@ -1,0 +1,3 @@
+test -f ${HOME}/.shrc.d/rc.git && source ${HOME}/.shrc.d/rc.git
+
+# vim: set sts=4 sw=4 et ft=sh:

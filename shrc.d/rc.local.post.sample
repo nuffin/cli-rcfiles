@@ -1,0 +1,24 @@
+#echo "enter common.sh.rc.local.post ..."
+
+export NVM_DIR=${HOME}/.nvm
+test -d "${NVM_DIR}" || mkdir -p  "${NVM_DIR}"
+if test "${OSNAME}" = "Darwin"; then
+    source $(brew --prefix nvm)/nvm.sh
+elif test "${OSNAME}" = "Linux"; then
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
+fi
+
+## for tmuxp
+#export DISABLE_AUTO_TITLE='true'
+
+## to allow this, set PermitUserEnvironment to "yes" and append PUTTY_* to AcceptEnv in sshd_config
+START_TMUX_SESSION="${PUTTY_TMUX_SESSION}"
+test -z "${START_TMUX_SESSION}" && START_TMUX_SESSION=p
+
+if [ ! -z "$SSH_CLIENT" ] && command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    #exec /usr/bin/env tmuxp load -y $START_TMUX_SESSION
+    #/usr/bin/env tmuxp load -2 -y $START_TMUX_SESSION
+    tmux -2 attach-session -t $START_TMUX_SESSION || tmux -2 new-session -s $START_TMUX_SESSION
+fi
+
+# vim: set sts=4 sw=4 et ft=sh:

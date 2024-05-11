@@ -1,0 +1,3 @@
+test -f ${HOME}/.shrc.d/rc.docker && source ${HOME}/.shrc.d/rc.docker
+
+# vim: set ts=8 sts=4 sw=4 et ft=sh:

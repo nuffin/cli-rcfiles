@@ -1,0 +1,37 @@
+[core]
+	excludesfile = ~/.gitignore
+[user]
+	name = <YOUR NAME>
+	email = <YOUR EMAIL>
+	signingkey = <YOUR GPG SIGN KEY>
+[push]
+	default = simple
+	autoSetupRemote = true
+[pull]
+	rebase = true
+[commit]
+	gpgsign = true
+[gpg]
+	program = /usr/local/bin/gpg
+
+[init]
+	defaultBranch = main
+[alias]
+	adog = log --all --decorate --oneline --graph
+	adogf = log --all --decorate --oneline --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+
+[credential]
+	helper = osxkeychain
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[lfs "transfer"]
+	maxretries = 16

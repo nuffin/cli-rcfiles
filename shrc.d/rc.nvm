@@ -1,0 +1,5 @@
+export NVM_DIR="$HOME/.nvm"
+test -s "$NVM_DIR/nvm.sh" && source "$NVM_DIR/nvm.sh"
+test -s "$NVM_DIR/bash_completion" && source "$NVM_DIR/bash_completion"
+
+# vim: set sts=4 sw=4 et ft=sh:
