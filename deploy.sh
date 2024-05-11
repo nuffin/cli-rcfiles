@@ -218,7 +218,7 @@ STEP=$((STEP + 1))
 if test "${OSNAME}" = "Linux" -o "${OSNAME}" = "FreeBSD" -o "${OSNAME}" = "Darwin"; then
     echo ">>> ${STEP}.  Installing nvm"
     ## Install nvm
-    if test -z "$(command -v nvm)"; then
+    if test ! -d ${HOME}/.nvm -a -z "$(${WHICH} nvm)"; then
         echo "    installing nvm ..."
         curl -o- ${NVM_INSTALL_URL} | bash
     else
@@ -231,7 +231,7 @@ STEP=$((STEP + 1))
 
 if test "${OSNAME}" = "Linux" -o "${OSNAME}" = "FreeBSD" -o "${OSNAME}" = "Darwin"; then
     echo ">>> ${STEP}.  Installing pyenv"
-    if test -z "$(command -v pyenv)"; then
+    if test ! -d ${HOME}/.pyenv -a -z "$(${WHICH} pyenv)"; then
         echo "    installing pyenv ..."
         curl -o- ${PYENV_INSTALL_URL} | bash
     else
@@ -243,7 +243,7 @@ fi
 STEP=$((STEP + 1))
 
 echo ">>> ${STEP}.  Installing oh-my-zsh"
-if test ! -z "${WHICH} zsh"; then
+if test ! -z "$(${WHICH} zsh)"; then
     if test ! -d ${HOME}/.oh-my-zsh; then
         curl -Lv https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
     fi
