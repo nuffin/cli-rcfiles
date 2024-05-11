@@ -52,6 +52,7 @@ __EOF__
 
 function docker-search-all-tags
 {
+    ## thanks the answer: https://stackoverflow.com/a/39454426/4917658
     REPOS_NAME=${1}
     wget -q -O - "https://hub.docker.com/v2/namespaces/library/repositories/${REPOS_NAME}/tags?page_size=100" | grep -o '"name": *"[^"]*' | grep -o '[^"]*$'
 }
