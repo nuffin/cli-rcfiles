@@ -70,7 +70,7 @@ function Clone-Git
     Process
     {
         if (!$Url) {
-            Write-Error "Usage: ${0} git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
+            Write-Error "Usage: ${0} [-SshKeyFilePath SSH-KEY-FILE-PATH] git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
             return
         }
 
