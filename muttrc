@@ -1,0 +1,4 @@
+#set confirmappend=no
+#set confirmcreate=no
+set folder=~/.mutt/mail
+set from="<YOUR@EMAIL.ADDRESS>"
