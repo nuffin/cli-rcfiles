@@ -1,0 +1,21 @@
+# ~/.tmuxp/sample.yml
+
+session_name: sample
+start_directory: ${HOME}
+
+environment:
+  TMUX_SESSION_NAME: sample
+
+windows:
+  - window_name: home
+    start_directory: ${HOME}
+    layout: even-vertical
+    panes:
+      - shell_command_before:
+          - >
+            test -f ~/.tmux.conf.d/tmux.${TMUX_SESSION_NAME}.conf &&
+            tmux source-file ~/.tmux.conf.d/tmux.${TMUX_SESSION_NAME}.conf;
+            clear
+        focus: true
+      -
+      -
