@@ -1,3 +1,5 @@
+" NOTE: something maybe outdated, e.g. for GVim, for Windows, for GVim in Windows
+
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish
