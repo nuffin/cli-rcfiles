@@ -612,6 +612,7 @@ call plug#begin('~/.vim/plugged')
 
   Plug 'skywind3000/asyncrun.vim'
   Plug 'dense-analysis/ale'
+  noremap <silent> fd :ALEDetail<CR>
   let g:ale_fixers = {
         \ '*': ['remove_trailing_lines', 'trim_whitespace'],
         \ 'javascript': ['eslint']
