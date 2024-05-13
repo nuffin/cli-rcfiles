@@ -1,10 +1,32 @@
 test -z "${GITROOT}" && export GITROOT=${HOME}/studio
 
-function  clonegit
+function clonegit
 {
+    function usage
+    {
+        echo "Usage: ${0} [-k /path/to/ssh-key-file] git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
+    }
+
+    OPTSTRING=":k:"
+
+    while getopts ${OPTSTRING} opt; do
+        case ${opt} in
+            k)
+                SSH_KEY_PATH=${OPTARG}
+                shift
+                shift
+                ;;
+            ?)
+                echo "Invalid option: -${OPTARG}."
+                usage
+                return 1
+                ;;
+        esac
+    done
+
     repo=$1
     repo_dir=$2
-    test -z "${repo}" && echo "Usage: ${0} git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git" && return
+    test -z "${repo}" && usage && return
 
     [[ "${repo}" = *.git ]] || repo="${repo}.git"
 
@@ -17,10 +39,14 @@ __EOF__
 
     target_dir=${GITROOT}/${hostname}/${username}
 
-    echo "Cloning ${repo} into ${target_dir}/ as ${reposname} ..."
+    test ! -z ${SSH_KEY_PATH} && GIT_SSH_KEY_OPTION="-c core.sshCommand=\"ssh -i ${SSH_KEY_PATH}\""
+
+    echo -n "Cloning ${repo} "
+    test ! -z "${SSH_KEY_PATH}" && echo -n "with ssh key file ${SSH_KEY_PATH} "
+    echo "into ${target_dir}/ as ${reposname} ..."
 
     test -d ${target_dir} || mkdir -p ${target_dir}
-    (cd ${target_dir} && git clone ${repo} ${repo_dir})
+    (cd ${target_dir} && sh -c "git clone ${GIT_SSH_KEY_OPTION[@]} ${repo} ${repo_dir}")
 }
 
 ## use alias in .gitconfig instead
