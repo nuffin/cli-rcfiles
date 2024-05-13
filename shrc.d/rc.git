@@ -1,4 +1,4 @@
-test -z "${GITROOT}" && export GITROOT=${HOME}/studio
+test -z "${GITROOT}" && export GITROOT=${HOME}/code
 
 function clonegit
 {

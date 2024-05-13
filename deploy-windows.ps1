@@ -1,3 +1,5 @@
+$CODE_ROOT_DIR_NAME=code
+
 @'
 
 Installing nvm-windows
@@ -75,7 +77,7 @@ function Clone-Git
         }
 
         $PathItems = $Url -replace '.git$', '' -replace '(.*@|(https|http|ssh)://)([a-z0-9\.-]+)(:[0-9]+/|:|/)(.*)/(.*)', '$3 $5 $6' -split ' '
-        $Path = [string]::Join('\', $env:USERPROFILE, 'studio', $PathItems[0], $PathItems[1]);
+        $Path = [string]::Join('\', $env:USERPROFILE, $CODE_ROOT_DIR_NAME, $PathItems[0], $PathItems[1]);
         $RepoName = $PathItems[2]
         Write-Host "Cloning $Url into $Path/ as $RepoName ..."
 
@@ -101,3 +103,5 @@ function Clone-Git
 # $GitPromptSettings.DefaultPromptWriteStatusFirst = $true
 # $GitPromptSettings.DefaultPromptBeforeSuffix.Text = '`n'
 # ```
+
+Clear-Variable -Name CODE_ROOT_DIR_NAME

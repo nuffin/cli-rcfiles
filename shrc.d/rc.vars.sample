@@ -5,8 +5,8 @@ export OSNAME=$(uname -o 2>/dev/null || uname -o)
 
 export DISTRO_NAME=""
 
-export CODEROOT=${HOME}/studio
-export GITROOT=${HOME}/studio
+export CODEROOT=${HOME}/code
+export GITROOT=${HOME}/code
 
 export DEFAULT_CONTAINER_NAME=daily-debian
 
