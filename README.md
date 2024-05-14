@@ -2,6 +2,16 @@
 
 These are RC (Runtime Config) files for command line environment.
 
+## Features
+
+- synced profiles - one repository, multiple hosts.
+  - use `zprofiles update` command to update repository, no matter which directory your are working in.
+- bash / zsh
+  - structured rc files
+  - `clonegit` command, to clone git repositories into sturct local directory.
+- tmux config file
+- vim config file
+
 ## How to use
 
 ### macOS/Linux
