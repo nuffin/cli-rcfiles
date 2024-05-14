@@ -233,6 +233,21 @@ fi
 STEP=$((STEP + 1))
 
 if test "${OSNAME}" = "Linux" -o "${OSNAME}" = "FreeBSD" -o "${OSNAME}" = "Darwin"; then
+    echo ">>> ${STEP}.  Installing gvm"
+    ## Install gvm
+    if test ! -d ${HOME}/.gvm -a -z "$(${WHICH} gvm)"; then
+        echo "    installing gvm ..."
+        ${SUDO} apt update && ${SUDO} apt install bison
+        curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer | bash -
+    else
+        echo "    already installed"
+    fi
+elif echo ${OSNAME} | grep -i cygwin 2>&1 >/dev/null; then
+    echo "NOTE: do not forget to install gvm"
+fi
+STEP=$((STEP + 1))
+
+if test "${OSNAME}" = "Linux" -o "${OSNAME}" = "FreeBSD" -o "${OSNAME}" = "Darwin"; then
     echo ">>> ${STEP}.  Installing pyenv"
     if test ! -d ${HOME}/.pyenv -a -z "$(${WHICH} pyenv)"; then
         echo "    installing pyenv ..."
