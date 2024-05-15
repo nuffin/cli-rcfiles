@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# for mutt to view html e-mails
+
+# where html2txt is a shell script that performs the conversion, e.g. by
+#     calling
+
+links -html-numbered-links 1 -html-images 1 -dump "file://$@"
+
+# or
+#
+# lynx -force_html -dump "$@"
+#
+# or
+#
+# w3m -T text/html -F -dump "$@"

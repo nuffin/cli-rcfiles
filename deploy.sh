@@ -27,6 +27,7 @@ LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} pinentry-curses vlock 
 LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} rust-all cargo"
 LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} tcpdump nmap tcpflow"
 LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} pciutils usbutils lshw"
+LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} mutt pass abook getmail getmail6"
 
 FREEBSD_ADDITIONAL_SOFTWARES="git curl tmux gnupg screen tio minicom ctags python3-pip rsync wget xxd"
 FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} tio minicom"
@@ -35,7 +36,7 @@ FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} pinentry-curses vl
 
 OS_OS_ADDITIONAL_SOFTWARES="git curl vim-nox tmux tmuxp gnupg2 vlock"
 
-ADDITIONAL_DIRS="${HOME}/.tmux/plugins ${HOME}/.mutt"
+ADDITIONAL_DIRS="${HOME}/.tmux/plugins ${HOME}/.mutt/mail ${HOME}/.config/getmail"
 
 ## Constants - end
 
@@ -48,7 +49,7 @@ TARGETS="${TARGETS} vimrc vimrc.d"
 TARGETS="${TARGETS} tmux.conf tmux.conf.d tmux.conf.d/tmux.conf.local.pre tmux.conf.d/tmux.conf.local.post tmuxp"
 TARGETS="${TARGETS} screenrc screenrc.d"
 TARGETS="${TARGETS} gitconfig gitignore"
-TARGETS="${TARGETS} lynxrc lynx w3m muttrc"
+TARGETS="${TARGETS} lynxrc lynx w3m muttrc mailcap msmtprc"
 cd ${HOME}
 echo ">>> ${STEP}.  Making links or copy samples ..."
 for TARGET in ${TARGETS}; do
@@ -172,12 +173,25 @@ done
 #echo "done"
 STEP=$((STEP + 1))
 
+echo ">>> ${STEP}.  Additional setup for mutt"
+for f in ${BASEDIR}/getmail/*.conf; do
+    LOCAL_TARGET=${HOME}/.config/getmail/$(basename $f) \
+    ln -s $f ${LOCAL_TARGET} \
+done
+for f in ${BASEDIR}/mutt/*; do
+    LOCAL_TARGET=${HOME}/.mutt/$(basename $f) \
+    ln -s $f ${LOCAL_TARGET} \
+done
+
+#echo "done"
+STEP=$((STEP + 1))
+
 echo ">>> ${STEP}.  Installing additional softwares"
 if test "${OSNAME}" = "Linux"; then
     ADDITIONAL_SOFTWARES=${LINUX_ADDITIONAL_SOFTWARES}
     echo "    installing ${ADDITIONAL_SOFTWARES} ..."
     if test -f /etc/debian_version; then
-        ${SUDO} env $_http_proxy $_https_proxy apt update && ${SUDO} env $_http_proxy $_https_proxy apt install -y ${ADDITIONAL_SOFTWARES}
+        ${SUDO} env $_http_proxy $_https_proxy apt update && ${SUDO} env $_http_proxy $_https_proxy apt install -y --ignore-missing ${ADDITIONAL_SOFTWARES}
     fi
 
     ${SUDO} /usr/bin/env pip3 install --break-system-packages tmuxp

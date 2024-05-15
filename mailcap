@@ -1,0 +1,2 @@
+# for mutt to view html e-mails
+text/html; ~/.mutt/html2txt %s; copiousoutput

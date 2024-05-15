@@ -1,4 +1,111 @@
+set realname="YOUR NAME"
+set from="<YOUR@EMAIL.ADDRESS>"
+
 #set confirmappend=no
 #set confirmcreate=no
+set mbox_type=Maildir
 set folder=~/.mutt/mail
-set from="<YOUR@EMAIL.ADDRESS>"
+#set folder=~/Mail
+set postponed="=Draft"
+
+set to_chars=" +TCFL"
+set attribution="* %n <%a> [%{!%Y-%m-%d %H:%M:%S}]:\n"
+
+set include
+set indent_str="> "
+set header=no
+
+set quit=ask-yes
+set move=no
+set ascii_chars=no
+
+# set use_threads=yes sort=reverse-last-date sort_aux=date
+set pager_stop
+set resolve=yes
+
+set pipe_decode=yes
+set query_command= "abook --mutt-query '%s'"
+macro index,pager a "<pipe-message>abook --add-email-quiet<return>" "Add sender as contacts"
+bind editor <Tab> complete-query
+
+set charset="utf-8"
+set send_charset="us-ascii:iso-8859-1:utf-8:gb2312"
+set wait_key=yes
+set noconfirmappend
+
+set edit_headers=yes
+set autoedit=yes
+set fast_reply
+set pager_index_lines=6
+
+subscribe debian-chinese-gb@lists.debian.org
+
+set rfc2047_parameters=yes
+set assumed_charset="utf-8:gb2312:big5"
+
+auto_view text/html
+
+alternative_order text/plain text/enriched text/html
+
+set envelope_from=yes
+
+ignore *
+unignore from to subject date
+
+set sidebar_visible = yes
+macro index b '<enter-command>toggle sidebar_visible<ent
+
+bind index,pager <C-Up> sidebar-prev # Ctrl-Up – Previous Mailbox
+bind index,pager <C-Down> sidebar-next # Ctrl-Down – Next Mailbox
+bind index,pager <C-Right> sidebar-open # Ctrl-Right – Open Highlighted Mailbox
+
+#bind index G imap-fetch-mail
+
+macro index,pager G "!nohup getmails -n > /dev/null 2> /dev/null &\n" "call getmail"
+
+# macro generic \em ":source $HOME/.muttrc\r" "Loading .muttrc"
+# macro generic \ej "!vim $HOME/.muttrc\r" "Edit .muttrc"
+
+#macro index,pager \es "T.*<enter>;s" "Save mails"
+#macro index,pager \en "T~N<enter>;WN;W*T~O<enter>;WO;W*" "Clear N and O marks"
+
+color quoted green brightblack
+color quoted1 magenta black
+color quoted2 yellow brightblack
+color quoted3 red black
+color signature cyan black
+
+color index lightcyan black "~P"     # send by self (ref:alternates)
+color index lightred black "~D"      # deleted
+color index lightgreen black "~U"    # unread
+color index yellow black "~T"        # short
+color index lightyellow black "~F"   # long-term
+#color index magenta black "~h ^Disposition-Notification-To: !~Q" # unreplied
+
+color normal lightwhite default
+# color attachment brightgreen blue
+# color bold brightwhite default
+# color underline default blue
+# color error brightwhite default
+# color indicator white blue
+# color message brightblue default
+# color status white blue
+
+color sidebar_indicator default red # Red background
+#color sidebar_highlight brightwhite grey # Grey background
+#color sidebar_spool_file lightyellow default # Yellow
+# color sidebar_unread lightcyan default # Light blue
+color sidebar_new brightgreen default # Green
+#color sidebar_ordinary default default # Default colors
+color sidebar_flagged lightred default # Red
+color sidebar_divider color8 default # Dark grey
+
+send-hook "~f sample@gmail.com" 'set record="=sample@gmail.com/Sent"; set postponed="=sample@gmail.com/Draft"; my_hdr From: sample@gmail.com; set sendmail="/usr/bin/msmtp -a sample@gmail.com"'
+send-hook "~f sample@outlook.com" 'set record="=sample@outlook.com/Sent"; set postponed="=sample@outlook.com/Draft"; my_hdr From: sample@outlook.com; set sendmail="/usr/bin/msmtp -a sample@outlook.com"'
+send-hook "~f sample@163.com" 'set record="=sample@163.com/Sent"; set postponed="=sample@163.com/Draft"; my_hdr From: sample@163.com; set sendmail="/usr/bin/msmtp -a sample@163.com"'
+
+# folder-hook . 'set record=""; set postponed=""; unmy_hdr *; set sendmail=""'
+folder-hook =sample@gmail.com 'set record="=sample@gmail.com/Sent"; set postponed="=sample@gmail.com/Draft"; my_hdr From: sample@gmail.com; set sendmail="/usr/bin/msmtp -a sample@gmail.com"'
+folder-hook =sample@outlook.com 'set record="=sample@outlook.com/Sent"; set postponed="=sample@outlook.com/Draft"; my_hdr From: sample@outlook.com; set sendmail="/usr/bin/msmtp -a sample@outlook.com"'
+folder-hook =sample@163.com 'set record="=sample@163.com/Sent"; set postponed="=sample@163.com/Draft"; my_hdr From: sample@163.com; set sendmail="/usr/bin/msmtp -a sample@163.com"'
+
