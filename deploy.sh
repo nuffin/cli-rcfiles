@@ -36,7 +36,14 @@ FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} pinentry-curses vl
 
 OS_OS_ADDITIONAL_SOFTWARES="git curl vim-nox tmux tmuxp gnupg2 vlock"
 
+EMAIL_ACCOUNTS="sample@gmail.com sample@outlook.com sample@163.com"
+
 ADDITIONAL_DIRS="${HOME}/.tmux/plugins ${HOME}/.mutt/mail ${HOME}/.config/getmail"
+for EMAIL_ACCOUNT in ${EMAIL_ACCOUNTS}; do
+    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/INBOX/new"
+    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/INBOX/cur"
+    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/INBOX/tmp"
+done
 
 ## Constants - end
 
@@ -175,14 +182,13 @@ STEP=$((STEP + 1))
 
 echo ">>> ${STEP}.  Additional setup for mutt"
 for f in ${BASEDIR}/getmail/*.conf; do
-    LOCAL_TARGET=${HOME}/.config/getmail/$(basename $f) \
-    ln -s $f ${LOCAL_TARGET} \
+    LOCAL_TARGET=${HOME}/.config/getmail/$(basename $f)
+    ln -s $f ${LOCAL_TARGET}
 done
 for f in ${BASEDIR}/mutt/*; do
-    LOCAL_TARGET=${HOME}/.mutt/$(basename $f) \
-    ln -s $f ${LOCAL_TARGET} \
+    LOCAL_TARGET=${HOME}/.mutt/$(basename $f)
+    ln -s $f ${LOCAL_TARGET}
 done
-
 #echo "done"
 STEP=$((STEP + 1))
 
@@ -251,7 +257,7 @@ if test "${OSNAME}" = "Linux" -o "${OSNAME}" = "FreeBSD" -o "${OSNAME}" = "Darwi
     ## Install gvm
     if test ! -d ${HOME}/.gvm -a -z "$(${WHICH} gvm)"; then
         echo "    installing gvm ..."
-        ${SUDO} apt update && ${SUDO} apt install bison
+        ${SUDO} apt update && ${SUDO} apt install -y bison hexdump
         curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer | bash -
     else
         echo "    already installed"
