@@ -7,6 +7,7 @@ set mbox_type=Maildir
 set folder=~/.mutt/mail
 #set folder=~/Mail
 set postponed="=Draft"
+set sort="reverse-threads"
 
 set to_chars=" +TCFL"
 set attribution="* %n <%a> [%{!%Y-%m-%d %H:%M:%S}]:\n"
@@ -61,7 +62,8 @@ bind index,pager <C-Right> sidebar-open # Ctrl-Right – Open Highlighted Mailbo
 
 #bind index G imap-fetch-mail
 
-macro index,pager G "!nohup getmails -n > /dev/null 2> /dev/null &\n" "call getmail"
+#macro index,pager G "!nohup getmails -n > /dev/null 2> /dev/null &\n" "call getmail"
+macro index,pager G "!getmails -n\n" "call getmail"
 
 # macro generic \em ":source $HOME/.muttrc\r" "Loading .muttrc"
 # macro generic \ej "!vim $HOME/.muttrc\r" "Edit .muttrc"
@@ -100,12 +102,12 @@ color sidebar_new brightgreen default # Green
 color sidebar_flagged lightred default # Red
 color sidebar_divider color8 default # Dark grey
 
-send-hook "~f sample@gmail.com" 'set record="=sample@gmail.com/Sent"; set postponed="=sample@gmail.com/Draft"; my_hdr From: sample@gmail.com; set sendmail="/usr/bin/msmtp -a sample@gmail.com"'
-send-hook "~f sample@outlook.com" 'set record="=sample@outlook.com/Sent"; set postponed="=sample@outlook.com/Draft"; my_hdr From: sample@outlook.com; set sendmail="/usr/bin/msmtp -a sample@outlook.com"'
-send-hook "~f sample@163.com" 'set record="=sample@163.com/Sent"; set postponed="=sample@163.com/Draft"; my_hdr From: sample@163.com; set sendmail="/usr/bin/msmtp -a sample@163.com"'
+#send-hook "~f sample@gmail.com"
+#send-hook "~f sample@outlook.com"
+#send-hook "~f sample@163.com"
 
-# folder-hook . 'set record=""; set postponed=""; unmy_hdr *; set sendmail=""'
-folder-hook =sample@gmail.com 'set record="=sample@gmail.com/Sent"; set postponed="=sample@gmail.com/Draft"; my_hdr From: sample@gmail.com; set sendmail="/usr/bin/msmtp -a sample@gmail.com"'
-folder-hook =sample@outlook.com 'set record="=sample@outlook.com/Sent"; set postponed="=sample@outlook.com/Draft"; my_hdr From: sample@outlook.com; set sendmail="/usr/bin/msmtp -a sample@outlook.com"'
-folder-hook =sample@163.com 'set record="=sample@163.com/Sent"; set postponed="=sample@163.com/Draft"; my_hdr From: sample@163.com; set sendmail="/usr/bin/msmtp -a sample@163.com"'
+# folder-hook . 'unmy_hdr *; set record="" postponed="" sendmail=""'
+folder-hook =sample@gmail.com 'my_hdr From: sample@gmail.com; set record="=sample@gmail.com/Sent" postponed="=sample@gmail.com/Draft" from="sample@gmail.com" sendmail="/usr/bin/msmtp -a sample@gmail.com"'
+folder-hook =sample@outlook.com 'my_hdr From: sample@outlook.com; set record="=sample@outlook.com/Sent" postponed="=sample@outlook.com/Draft" from="sample@outlook.com" sendmail="/usr/bin/msmtp -a sample@outlook.com"'
+folder-hook =sample@163.com 'my_hdr From: sample@163.com; set record="=sample@163.com/Sent" postponed="=sample@163.com/Draft" from="sample@163.com" sendmail="/usr/bin/msmtp -a sample@163.com"'
 
