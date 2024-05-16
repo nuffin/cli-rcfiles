@@ -54,7 +54,7 @@ ignore *
 unignore from to subject date
 
 set sidebar_visible = yes
-macro index b '<enter-command>toggle sidebar_visible<ent
+macro index b '<enter-command>toggle sidebar_visible<enter>'
 
 bind index,pager <C-Up> sidebar-prev # Ctrl-Up – Previous Mailbox
 bind index,pager <C-Down> sidebar-next # Ctrl-Down – Next Mailbox
