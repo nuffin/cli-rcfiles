@@ -30,8 +30,8 @@ LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} pciutils usbutils lshw
 LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} mutt pass abook getmail getmail6"
 
 FREEBSD_ADDITIONAL_SOFTWARES="git curl tmux gnupg screen tio minicom ctags python3-pip rsync wget xxd"
-FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} tio minicom"
 FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} tcpdump nmap tcpflow"
+FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} tio minicom"
 FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} pinentry-curses vlock urlview"
 
 OS_OS_ADDITIONAL_SOFTWARES="git curl vim-nox tmux tmuxp gnupg2 vlock"
@@ -47,6 +47,49 @@ done
 
 ## Constants - end
 
+function link_or_copy
+{
+    local LINK_TARGET=$1
+    local LOCAL_TARGET=$2
+    local BY_FORCE=$3
+
+    local LOCAL_TARGET_ORIG=${LOCAL_TARGET}.orig
+
+    echo -n "    linking ${LOCAL_TARGET}: "
+    if test -e "${LOCAL_TARGET}"; then
+        if test "x${BY_FORCE}" == "xf"; then
+            echo -n "exists, rename to ${LOCAL_TARGET_ORIG} . "
+            mv ${LOCAL_TARGET} ${LOCAL_TARGET_ORIG}
+        else
+            echo "exists, skip"
+            return
+        fi
+    fi
+
+    if test -e "${LINK_TARGET}.sample"; then
+        echo -n "copying sample file of ${LINK_TARGET} ... "
+        if test -e "${LOCAL_TARGET}"; then
+            if test "x${BY_FORCE}" == "xf"; then
+                echo -n "exists, rename to ${LOCAL_TARGET_ORIG} . "
+                mv ${LOCAL_TARGET} ${LOCAL_TARGET_ORIG}
+            else
+                echo "${}exists, skip"
+                return
+            fi
+        fi
+        cp "${LINK_TARGET}" "${LOCAL_TARGET}"
+    else
+        echo -n "making link for ${LOCAL_TARGET} ... "
+        if test -f ${LINK_TARGET}.${OSNAME}; then
+            LINK_TARGET=${LINK_TARGET}.${OSNAME}
+        fi
+        if ! ln -s ${LINK_TARGET} ${LOCAL_TARGET}; then
+            exit -1
+        fi
+    fi
+    echo "done"
+}
+
 STEP=0
 
 TARGETS="shrc.d shrc.d/rc.local.pre shrc.d/rc.local.post shrc.d/rc.vars"
@@ -60,44 +103,11 @@ TARGETS="${TARGETS} lynxrc lynx w3m muttrc mailcap msmtprc"
 cd ${HOME}
 echo ">>> ${STEP}.  Making links or copy samples ..."
 for TARGET in ${TARGETS}; do
+    LINK_TARGET=${BASEDIR}/${TARGET}
     LOCAL_TARGET=.${TARGET}
     LOCAL_TARGET_ORIG=.${TARGET}.orig
 
-    echo -n "    ${LOCAL_TARGET}: "
-    if test -e "${LOCAL_TARGET}"; then
-        if test "x${BY_FORCE}" == "xf"; then
-            echo -n "exists, rename to ${LOCAL_TARGET_ORIG} . "
-            mv ${LOCAL_TARGET} ${LOCAL_TARGET_ORIG}
-        else
-            echo "exists, skip"
-            continue
-        fi
-    fi
-
-    if test -e "${BASEDIR}/${TARGET}.sample"; then
-        echo -n "copying sample file of ${TARGET} ... "
-        if test -e "${LOCAL_TARGET}"; then
-            if test "x${BY_FORCE}" == "xf"; then
-                echo -n "exists, rename to ${LOCAL_TARGET_ORIG} . "
-                mv ${LOCAL_TARGET} ${LOCAL_TARGET_ORIG}
-            else
-                echo "exists, skip"
-                continue
-            fi
-        fi
-        cp "${LOCAL_TARGET}.sample" "${LOCAL_TARGET}"
-    else
-        echo -n "making link for ${LOCAL_TARGET} ... "
-        if test -f ${BASEDIR}/${TARGET}.${OSNAME}; then
-            LINK_TARGET=${BASEDIR}/${TARGET}.${OSNAME}
-        else
-            LINK_TARGET=${BASEDIR}/${TARGET}
-        fi
-        if ! ln -s ${LINK_TARGET} ${LOCAL_TARGET}; then
-            exit -1
-        fi
-    fi
-    echo "done"
+    link_or_copy ${LINK_TARGET} ${LOCAL_TARGET} ${BY_FORCE}
 done
 #echo "done"
 STEP=$((STEP + 1))
@@ -108,9 +118,6 @@ STEP=$((STEP + 1))
 
 echo ">>> ${STEP}.  Making additional directories need"
 for TARGET in ${ADDITIONAL_DIRS}; do
-    if test ! -e "${BASEDIR}/${TARGET}"; then
-        continue
-    fi
     echo -n "    ${TARGET}: "
     if test ! -d ${TARGET}; then
         echo "not exists, make it"
@@ -182,12 +189,14 @@ STEP=$((STEP + 1))
 
 echo ">>> ${STEP}.  Additional setup for mutt"
 for f in ${BASEDIR}/getmail/*.conf; do
+    LINK_TARGET=${f}
     LOCAL_TARGET=${HOME}/.config/getmail/$(basename $f)
-    ln -s $f ${LOCAL_TARGET}
+    link_or_copy ${LINK_TARGET} ${LOCAL_TARGET} ${BY_FORCE}
 done
 for f in ${BASEDIR}/mutt/*; do
+    LINK_TARGET=${f}
     LOCAL_TARGET=${HOME}/.mutt/$(basename $f)
-    ln -s $f ${LOCAL_TARGET}
+    link_or_copy ${LINK_TARGET} ${LOCAL_TARGET} ${BY_FORCE}
 done
 #echo "done"
 STEP=$((STEP + 1))
