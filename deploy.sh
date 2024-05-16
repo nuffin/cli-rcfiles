@@ -21,20 +21,20 @@ WHICH="command -v"
 NVM_INSTALL_URL=https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
 PYENV_INSTALL_URL=https://pyenv.run  ## equal to curl -L -o- https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
-LINUX_ADDITIONAL_SOFTWARES="git curl vim-nox tmux gnupg2 screen rsync wget xxd"
-LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} tio minicom universal-ctags python3-pip"
-LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} pinentry-curses vlock urlview"
-LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} rust-all cargo"
-LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} tcpdump nmap tcpflow"
-LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} pciutils usbutils lshw"
-LINUX_ADDITIONAL_SOFTWARES="${LINUX_ADDITIONAL_SOFTWARES} mutt pass abook getmail getmail6"
+LINUX_ADDITIONAL_SOFTWARE="git curl vim-nox tmux gnupg2 screen rsync wget xxd"
+LINUX_ADDITIONAL_SOFTWARE="${LINUX_ADDITIONAL_SOFTWARE} tio minicom universal-ctags python3-pip"
+LINUX_ADDITIONAL_SOFTWARE="${LINUX_ADDITIONAL_SOFTWARE} pinentry-curses vlock urlview"
+LINUX_ADDITIONAL_SOFTWARE="${LINUX_ADDITIONAL_SOFTWARE} rust-all cargo"
+LINUX_ADDITIONAL_SOFTWARE="${LINUX_ADDITIONAL_SOFTWARE} tcpdump nmap tcpflow"
+LINUX_ADDITIONAL_SOFTWARE="${LINUX_ADDITIONAL_SOFTWARE} pciutils usbutils lshw"
+LINUX_ADDITIONAL_SOFTWARE="${LINUX_ADDITIONAL_SOFTWARE} mutt pass abook getmail getmail6"
 
-FREEBSD_ADDITIONAL_SOFTWARES="git curl tmux gnupg screen tio minicom ctags python3-pip rsync wget xxd"
-FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} tcpdump nmap tcpflow"
-FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} tio minicom"
-FREEBSD_ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES} pinentry-curses vlock urlview"
+FREEBSD_ADDITIONAL_SOFTWARE="git curl tmux gnupg screen tio minicom ctags python3-pip rsync wget xxd"
+FREEBSD_ADDITIONAL_SOFTWARE="${FREEBSD_ADDITIONAL_SOFTWARE} tcpdump nmap tcpflow"
+FREEBSD_ADDITIONAL_SOFTWARE="${FREEBSD_ADDITIONAL_SOFTWARE} tio minicom"
+FREEBSD_ADDITIONAL_SOFTWARE="${FREEBSD_ADDITIONAL_SOFTWARE} pinentry-curses vlock urlview"
 
-OS_OS_ADDITIONAL_SOFTWARES="git curl vim-nox tmux tmuxp gnupg2 vlock"
+OS_OS_ADDITIONAL_SOFTWARE="git curl vim-nox tmux tmuxp gnupg2 vlock"
 
 EMAIL_ACCOUNTS="sample@gmail.com sample@outlook.com sample@163.com"
 
@@ -203,10 +203,10 @@ STEP=$((STEP + 1))
 
 echo ">>> ${STEP}.  Installing additional softwares"
 if test "${OSNAME}" = "Linux"; then
-    ADDITIONAL_SOFTWARES=${LINUX_ADDITIONAL_SOFTWARES}
-    echo "    installing ${ADDITIONAL_SOFTWARES} ..."
+    ADDITIONAL_SOFTWARE=${LINUX_ADDITIONAL_SOFTWARE}
+    echo "    installing ${ADDITIONAL_SOFTWARE} ..."
     if test -f /etc/debian_version; then
-        ${SUDO} env $_http_proxy $_https_proxy apt update && ${SUDO} env $_http_proxy $_https_proxy apt install -y --ignore-missing ${ADDITIONAL_SOFTWARES}
+        ${SUDO} env $_http_proxy $_https_proxy apt update && ${SUDO} env $_http_proxy $_https_proxy apt install -y --ignore-missing ${ADDITIONAL_SOFTWARE}
     fi
 
     ${SUDO} /usr/bin/env pip3 install --break-system-packages tmuxp
@@ -214,25 +214,25 @@ if test "${OSNAME}" = "Linux"; then
     /usr/bin/install -m 0700 -d ${HOME}/.gnupg
     echo "pinentry-program /usr/bin/pinentry-curses" >> ~/.gnupg/gpg-agent.conf
 elif test "${OSNAME}" = "FreeBSD"; then
-    ADDITIONAL_SOFTWARES="${FREEBSD_ADDITIONAL_SOFTWARES}"
-    echo "    installing ${ADDITIONAL_SOFTWARES} ..."
+    ADDITIONAL_SOFTWARE="${FREEBSD_ADDITIONAL_SOFTWARE}"
+    echo "    installing ${ADDITIONAL_SOFTWARE} ..."
 
     ${SUDO} pip3 install --break-system-packages tmuxp
 
     /usr/bin/install -m 0700 -d ${HOME}/.gnupg
     echo "pinentry-program /usr/bin/pinentry-curses" >> ~/.gnupg/gpg-agent.conf
 elif test "${OSNAME}" = "Darwin"; then
-    ADDITIONAL_SOFTWARES="${DARWIN}"
+    ADDITIONAL_SOFTWARE="${DARWIN_ADDITIONAL_SOFTWARE}"
     if ! ${WHICH} brew | grep brew >/dev/null 2>&1; then
         echo "    installing homebrew..."
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 
-    echo "    installing ${ADDITIONAL_SOFTWARES} ..."
-    brew install ${ADDITIONAL_SOFTWARES}
+    echo "    installing ${ADDITIONAL_SOFTWARE} ..."
+    brew install ${ADDITIONAL_SOFTWARE}
 elif echo ${OSNAME} | grep -i cygwin 2>&1 >/dev/null; then
-    ADDITIONAL_SOFTWARES="${OS_OS_ADDITIONAL_SOFTWARES}"
-    echo "    NOTE: do not forget to install ${ADDITIONAL_SOFTWARES}"
+    ADDITIONAL_SOFTWARE="${OS_OS_ADDITIONAL_SOFTWARE}"
+    echo "    NOTE: do not forget to install ${ADDITIONAL_SOFTWARE}"
 fi
 
 echo ">>> ${STEP}.  Fetching additional files from internet"
