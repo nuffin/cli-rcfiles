@@ -35,6 +35,10 @@ set query_command= "abook --mutt-query '%s'"
 macro index,pager a "<pipe-message>abook --add-email-quiet<return>" "Add sender as contacts"
 bind editor <Tab> complete-query
 
+macro index A \
+    "<tag-pattern>~N<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" \
+    "mark all new as read"
+
 set charset="utf-8"
 set send_charset="us-ascii:iso-8859-1:utf-8:gb2312"
 set wait_key=yes
