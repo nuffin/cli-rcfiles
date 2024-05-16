@@ -39,10 +39,10 @@ OS_OS_ADDITIONAL_SOFTWARES="git curl vim-nox tmux tmuxp gnupg2 vlock"
 EMAIL_ACCOUNTS="sample@gmail.com sample@outlook.com sample@163.com"
 
 ADDITIONAL_DIRS="${HOME}/.tmux/plugins ${HOME}/.mutt/mail ${HOME}/.config/getmail"
-for EMAIL_ACCOUNT in ${EMAIL_ACCOUNTS}; do
-    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/INBOX/new"
-    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/INBOX/cur"
-    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/INBOX/tmp"
+for EMAIL_ACCOUNT in Drafts Sent ${EMAIL_ACCOUNTS}; do
+    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/new"
+    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/cur"
+    ADDITIONAL_DIRS="${ADDITIONAL_DIRS} ${HOME}/.mutt/mail/${EMAIL_ACCOUNT}/tmp"
 done
 
 ## Constants - end
