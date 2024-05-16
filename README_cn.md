@@ -28,7 +28,10 @@
 
 有可能你需要修改一些变量定义，可以修改 `shrc.d/rc.vars` 文件
 
-注意：目前，代码只支持在自动安装 Debian/Ubuntu 系列发行版盅所需软件。
+注意
+
+- 目前，代码只支持在自动安装 Debian/Ubuntu 系列发行版盅所需软件，这个过程需要 apt 安装。
+- 如果你有 IMAP ID 扩展的需求，比如 163 或 126 邮箱，可以使用我修改过的 getmail6 版本，我把他放在 [这个](https://github.com/nuffin/getmail6/) 仓库的 [feature/rfc2971-imap-id-extension](https://github.com/nuffin/getmail6/tree/feature/rfc2971-imap-id-extension) 分支了.
 
 ### Windows
 

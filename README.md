@@ -24,7 +24,10 @@ Just clone and execute `./deploy.sh'.
 
 You may need to update some variable deffinitions, by editing `shrc.d/rc.vars` file
 
-NOTICE: automated installing of software neede support only Debian/Ubuntu series distributions currently.
+NOTICE
+
+- automated installing of software neede support only Debian/Ubuntu series distributions currently, it use apt.
+- if you have IMAP ID extension requirements, please use the modified version of getmail6, I put it in [feature/rfc2971-imap-id-extension](https://github.com/nuffin/getmail6/tree/feature/rfc2971-imap-id-extension) branch of [this](https://github.com/nuffin/getmail6/) repo.
 
 ### Windows
 
