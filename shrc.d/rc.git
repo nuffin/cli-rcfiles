@@ -1,19 +1,25 @@
 test -z "${GITROOT}" && export GITROOT=${HOME}/code
 
-function clonegit
+clonegit()
 {
-    function usage
+    #echo BASH_VERSION=${BASH_VERSION}
+    #echo ZSH_VERSION=${ZSH_VERSION}
+    local CMD
+    test ! -z "${BASH_VERSION}" && CMD=${FUNCNAME}
+    test ! -z "${ZSH_VERSION}" && CMD=${funcstack[1]}
+
+    usage()
     {
-        echo "Usage: ${0} [-k /path/to/ssh-key-file] git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
+        echo "Usage: ${CMD} [-k /path/to/ssh-key-file] git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
     }
 
-    OPTSTRING=":k:"
+    set -- $(getopt --unquoted --options k: --longoptions key: -- ${*})
+    test ${?} != 0 && usage &&  exit 1
 
-    while getopts ${OPTSTRING} opt; do
-        case ${opt} in
-            k)
-                SSH_KEY_PATH=${OPTARG}
-                shift
+    while test "${1}" != "--"; do
+        case ${1} in
+            -k|--key)
+                SSH_KEY_PATH=${2}
                 shift
                 ;;
             ?)
@@ -22,14 +28,19 @@ function clonegit
                 return 1
                 ;;
         esac
+	shift
     done
+    shift  ## skip --
 
-    repo=$1
-    repo_dir=$2
+    local repo=${1}
+    local repo_dir=${2}
     test -z "${repo}" && usage && return
 
     [[ "${repo}" = *.git ]] || repo="${repo}.git"
 
+    local hostname
+    local username
+    local reposname
     read hostname username reposname << __EOF__
 $(echo ${repo} | sed -E "s,.git$,,; s,(.*@|(https|http|ssh)://)([a-z0-9\.-]+)(:[0-9]+/|:|/)(.*)/(.*),\3 \5 \6,")
 __EOF__
