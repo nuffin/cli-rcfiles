@@ -1,37 +1,37 @@
-set realname="YOUR NAME"
-set from="<YOUR@EMAIL.ADDRESS>"
+set realname = "YOUR NAME"
+set from = "<YOUR@EMAIL.ADDRESS>"
 
-#set confirmappend=no
-#set confirmcreate=no
-set mbox_type=Maildir
-set folder=~/.mutt/mail
-#set folder=~/Mail
-set record="+Sent"
-set postponed="=Draft"
-set spoolfile="~/.mutt/mail/sample@outlook.com"
-set sort="reverse-threads"
+#set confirmappend = no
+#set confirmcreate = no
+set mbox_type = Maildir
+set folder = ~/.mutt/mail
+#set folder = ~/Mail
+set record = "+Sent"
+set postponed = "=Drafts"
+set spoolfile = "~/.mutt/mail/sample@outlook.com"
+set sort = "reverse-threads"
 
 #mailboxes `echo -n "+ "; find ~/.mutt/mail -maxdepth 1 -type d -printf "+'%f' "`
 mailboxes -label "sample@outlook.com" sample@outlook.coms/.mutt/mail/sample@outlook.com
 mailboxes -label "sample@163.com" sample@163.coms/.mutt/mail/sample@163.com
 
-set to_chars=" +TCFL"
-set attribution="* %n <%a> [%{!%Y-%m-%d %H:%M:%S}]:\n"
+set to_chars = " +TCFL"
+set attribution = "* %n <%a> [%{!%Y-%m-%d %H:%M:%S}]:\n"
 
 set include
-set indent_str="> "
-set header=no
+set indent_str = "> "
+set header = no
 
-set quit=ask-yes
-set move=no
-set ascii_chars=no
+set quit = ask-yes
+set move = no
+set ascii_chars = no
 
-# set use_threads=yes sort=reverse-last-date sort_aux=date
+# set use_threads = yes sort = reverse-last-date sort_aux = date
 set pager_stop
-set resolve=yes
+set resolve = yes
 
-set pipe_decode=yes
-set query_command= "abook --mutt-query '%s'"
+set pipe_decode = yes
+set query_command = "abook --mutt-query '%s'"
 macro index,pager a "<pipe-message>abook --add-email-quiet<return>" "Add sender as contacts"
 bind editor <Tab> complete-query
 
@@ -39,26 +39,38 @@ macro index A \
     "<tag-pattern>~N<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" \
     "mark all new as read"
 
-set charset="utf-8"
-set send_charset="us-ascii:iso-8859-1:utf-8:gb2312"
-set wait_key=yes
+set charset = "utf-8"
+set send_charset = "us-ascii:iso-8859-1:utf-8:gb2312"
+set wait_key = yes
 set noconfirmappend
 
-set edit_headers=yes
-set autoedit=yes
+set edit_headers = yes
+set autoedit = yes
 set fast_reply
-set pager_index_lines=6
+set pager_index_lines = 6
+
+set crypt_autosign = yes
+#set crypt_autoencrypt = yes
+set crypt_replysign = yes
+#set crypt_replyencrypt = yes
+#set crypt_replysignencrypted = yes
+set crypt_verify_sig=yes
+set pgp_default_key = 0x12345678
+set pgp_sign_as = 0x12345678
+set pgp_use_gpg_agent=yes
+set pgp_show_unusable = no
+# set pgp_sign_as = sample@domainl.com
 
 subscribe debian-chinese-gb@lists.debian.org
 
-set rfc2047_parameters=yes
-set assumed_charset="utf-8:gb2312:big5"
+set rfc2047_parameters = yes
+set assumed_charset = "utf-8:gb2312:big5"
 
 auto_view text/html
 
 alternative_order text/plain text/enriched text/html
 
-set envelope_from=yes
+set envelope_from = yes
 
 ignore *
 unignore from to subject date
@@ -66,14 +78,19 @@ unignore from to subject date
 set sidebar_visible = yes
 macro index b '<enter-command>toggle sidebar_visible<enter>'
 
-bind index,pager \CP sidebar-prev # Ctrl-P – Previous Mailbox
-bind index,pager \CN sidebar-next # Ctrl-N – Next Mailbox
-bind index,pager \CO sidebar-open # Ctrl-O – Open Highlighted Mailbox
+bind index,pager \CP sidebar-prev
+bind index,pager \CN sidebar-next
+bind index,pager \CO sidebar-open
 
 #bind index G imap-fetch-mail
 
-#macro index,pager G "!nohup getmails -n > /dev/null 2> /dev/null &\n" "call getmail"
-macro index,pager G "!getmails -n\n" "call getmail"
+macro index,pager G "!getmails -n\n" "call getmail from all accounts"
+
+## rebind g to get mail for current seleted account, and use <Esc>g to reply to group
+# to use this macro, you need the modified version of getmail6
+bind index g noop
+macro index g "!getmails -n -A $my_account\n" "call getmail to get email from current account"
+bind index,pager <Esc>g group-reply
 
 # macro generic \em ":source $HOME/.muttrc\r" "Loading .muttrc"
 # macro generic \ej "!vim $HOME/.muttrc\r" "Edit .muttrc"
@@ -116,8 +133,14 @@ color sidebar_divider color8 default # Dark grey
 #send-hook "~f sample@outlook.com"
 #send-hook "~f sample@163.com"
 
-# folder-hook . 'unmy_hdr *; set record="" postponed="" sendmail=""'
-folder-hook =sample@gmail.com 'my_hdr From: sample@gmail.com; set record="=sample@gmail.com/Sent" postponed="=sample@gmail.com/Draft" from="sample@gmail.com" sendmail="/usr/bin/msmtp -a sample@gmail.com"'
-folder-hook =sample@outlook.com 'my_hdr From: sample@outlook.com; set record="=sample@outlook.com/Sent" postponed="=sample@outlook.com/Draft" from="sample@outlook.com" sendmail="/usr/bin/msmtp -a sample@outlook.com"'
-folder-hook =sample@163.com 'my_hdr From: sample@163.com; set record="=sample@163.com/Sent" postponed="=sample@163.com/Draft" from="sample@163.com" sendmail="/usr/bin/msmtp -a sample@163.com"'
+# folder-hook . 'unmy_hdr *; set record = "" postponed = "" sendmail = ""'
+folder-hook =sample@gmail.com 'my_hdr From: sample@gmail.com; \
+	macro index g "!getmails -n -A $my_account\n" "call getmail to get email from current account"'
+        set record="=sample@gmail.com/Sent" postponed="=sample@gmail.com/Draft" from="sample@gmail.com" my_account="sample@gmail.com" sendmail="/usr/bin/msmtp -a sample@gmail.com"'
+folder-hook =sample@outlook.com 'my_hdr From: sample@outlook.com; \
+        set record="=sample@outlook.com/Sent" postponed="=sample@outlook.com/Draft" from="sample@outlook.com" my_account="sample@outlook.com" sendmail="/usr/bin/msmtp -a sample@outlook.com"
+	macro index g "!getmails -n -A $my_account\n" "call getmail to get email from current account"'
+folder-hook =sample@163.com 'my_hdr From: sample@163.com; \
+        set record="=sample@163.com/Sent" postponed="=sample@163.com/Draft" from="sample@163.com" my_account="sample@163.com" sendmail="/usr/bin/msmtp -a sample@163.com"
+	macro index g "!getmails -n -A $my_account\n" "call getmail to get email from current account"'
 
