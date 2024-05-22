@@ -10,14 +10,23 @@ clonegit()
 
     usage()
     {
-        echo "Usage: ${CMD} [-k /path/to/ssh-key-file] git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
+        echo "Usage: ${CMD} [-c|--chdir] [-k /path/to/ssh-key-file] git@gitserver.com:owner/project.git|https://gitserver.com/owner/project.git"
     }
 
-    set -- $(getopt --unquoted --options k: --longoptions key: -- ${*})
-    test ${?} != 0 && usage &&  exit 1
+    local GETOPT_RESULT
+    GETOPT_RESULT=$(getopt --name "${CMD}" --unquoted --options 'ck:' --longoptions 'chdir,key:' -- "$@")
+    test $? -ne 0 && usage && return 1
+    eval set -- "${GETOPT_RESULT}"
+
+    local CHDIR_AFTER_CLONE
+    local SSH_KEY_PATH
+    local GIT_SSH_KEY_OPTION
 
     while test "${1}" != "--"; do
         case ${1} in
+            -c|--chdir)
+                CHDIR_AFTER_CLONE=1
+                ;;
             -k|--key)
                 SSH_KEY_PATH=${2}
                 shift
@@ -28,7 +37,7 @@ clonegit()
                 return 1
                 ;;
         esac
-	shift
+        shift
     done
     shift  ## skip --
 
@@ -48,7 +57,7 @@ __EOF__
     #echo username=${username}
     #echo reposname=${reposname}
 
-    target_dir=${GITROOT}/${hostname}/${username}
+    local target_dir=${GITROOT}/${hostname}/${username}
 
     test ! -z ${SSH_KEY_PATH} && GIT_SSH_KEY_OPTION="-c core.sshCommand=\"ssh -i ${SSH_KEY_PATH}\""
 
@@ -58,6 +67,8 @@ __EOF__
 
     test -d ${target_dir} || mkdir -p ${target_dir}
     (cd ${target_dir} && sh -c "git clone ${GIT_SSH_KEY_OPTION[@]} ${repo} ${repo_dir}")
+
+    test ! -z "${CHDIR_AFTER_CLONE}" && cd ${target_dir}/${reposname}
 }
 
 ## use alias in .gitconfig instead
